@@ -64,4 +64,5 @@ jobs:
 
       - name: Run ESLint for JavaScript files
         run: |
-          ./node_modules/.bin/eslint .
+          ./node_modules/.bin/eslint . --config '{"rules": {"semi": "error", "quotes": ["error", "single"]}}'
+
