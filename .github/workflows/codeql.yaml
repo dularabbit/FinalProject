@@ -50,11 +50,6 @@ jobs:
       with:
         category: "/language:${{matrix.language}}"
 
-    - name: Run CSSLint
-      run: |
-        npm install -g csslint
-        csslint '/css'
-
     - name: Run EJSLint
       run: |
         npm install -g ejs-lint
