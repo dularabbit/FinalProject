@@ -6,7 +6,7 @@ on:
   pull_request:
     branches: ["main"]
   schedule:
-    - cron: '36 19 4'
+    - cron: '36 19 4 * *' # This will run at 19:36 UTC on the 4th day of every month
 
 jobs:
   analyze:
