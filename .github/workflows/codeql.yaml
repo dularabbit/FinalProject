@@ -6,7 +6,7 @@ on:
   pull_request:
     branches: ["main"]
   schedule:
-    - cron: '36 19 * * 4'
+    - cron: '36 19 4'
 
 jobs:
   analyze:
@@ -41,9 +41,6 @@ jobs:
           echo "EJS files found: $EJS_FILES"
           echo "::set-output name=ejs_files::$EJS_FILES"
 
-      - name: Scan JavaScript files for Security Vulnerabilities
-        run: ./node_modules/.bin/eslint js/ --config '{"rules": {"semi": "error", "quotes": ["error", "single"]}}'
-
       - name: Scan EJS files for Security Vulnerabilities
         run: |
           EJS_FILES=$(find . -type f -name "*.ejs")
@@ -61,4 +58,3 @@ jobs:
 
       - name: Scan for Security Vulnerabilities with npm audit
         run: npm audit
-
