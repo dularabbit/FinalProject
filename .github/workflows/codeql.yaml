@@ -31,6 +31,7 @@ jobs:
       - name: Install dependencies
         run: |
           npm install bootstrap jquery
+          npm install eslint eslint-plugin-ejs
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
@@ -47,5 +48,4 @@ jobs:
 
       - name: Run ESLint for JavaScript files
         run: |
-          npm install eslint eslint-plugin-ejs
-          find . -type f -name "*.js" -exec eslint {} +
+          ./node_modules/.bin/eslint .
