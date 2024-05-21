@@ -23,26 +23,25 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-
-      - name: Install dependencies
-        run: |
-          npm install bootstrap jquery
-          npm install eslint eslint-plugin-ejs
-
-      - name: Initialize CodeQL
+      - name: Install CodeQL
         uses: github/codeql-action/init@v3
-        with:
-          languages: javascript
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
 
-      - name: Run EJSLint for EJS files
+      - name: Find EJS files
         run: |
-          npm install -g ejs-lint
-          find . -type f -name "*.ejs" -exec ejslint {} +
+          EJS_FILES=$(find . -type f -name "*.ejs")
+          echo "EJS files found: $EJS_FILES"
 
+      - name: Scan for Security Vulnerabilities with npm audit
+        run: npm audit
+
+      - name: Scan for Security Vulnerabilities with snyk
+        run: npx snyk test --all-projects
+
+      - name: Scan for Security Vulnerabilities with SonarQube
+        run: |
+          docker run -d --name sonarqube -p 9000:9000 sonarqube:lts
+          sleep 60
+          docker run --rm -e SONAR_HOST_URL=http://localhost:9000 -e SONAR_LOGIN=admin -e SONAR_PASSWORD=admin -v "$(pwd):/usr/src" sonarsource/sonar-scanner-cli
