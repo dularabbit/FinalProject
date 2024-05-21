@@ -23,16 +23,41 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install CodeQL
-        uses: github/codeql-action/init@v3
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install ESLint and required plugins
+        run: npm install eslint eslint-plugin-ejs
+
+      - name: Find EJS files
+        id: find_ejs_files
+        run: |
+          EJS_FILES=$(find . -type f -name "*.ejs")
+          echo "EJS files found: $EJS_FILES"
+          echo "::set-output name=ejs_files::$EJS_FILES"
+
+      - name: Scan JavaScript files for Security Vulnerabilities
+        run: ./node_modules/.bin/eslint js/ --config '{"rules": {"semi": "error", "quotes": ["error", "single"]}}'
+
+      - name: Scan EJS files for Security Vulnerabilities
+        run: |
+          EJS_FILES=$(find . -type f -name "*.ejs")
+          if [ -z "$EJS_FILES" ]; then
+            echo "No EJS files found to scan."
+          else
+            for file in $EJS_FILES; do
+              echo "Scanning $file"
+              ./node_modules/.bin/eslint $file --config '{"rules": {"semi": "error", "quotes": ["error", "single"]}}'
+            done
+          fi
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
 
-      - name: Find EJS files
-        run: |
-          EJS_FILES=$(find . -type f -name "*.ejs")
-          echo "EJS files found: $EJS_FILES"
-          
       - name: Scan for Security Vulnerabilities with npm audit
         run: npm audit
