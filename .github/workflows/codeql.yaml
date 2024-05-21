@@ -11,8 +11,8 @@ on:
 jobs:
   analyze:
     name: Analyze (${{ matrix.language }})
-    runs-on: ${{ (matrix.language == 'swift' && 'macos-latest') || 'ubuntu-latest' }}
-    timeout-minutes: ${{ (matrix.language == 'swift' && 120) || 360 }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
     permissions:
       security-events: write
       packages: read
@@ -24,12 +24,6 @@ jobs:
       matrix:
         include:
           - language: javascript-typescript
-            build-mode: none
-          - language: css
-            build-mode: none
-          - language: ejs
-            build-mode: none
-          - language: dockerfile
             build-mode: none
 
     steps:
@@ -55,3 +49,12 @@ jobs:
       uses: github/codeql-action/analyze@v3
       with:
         category: "/language:${{matrix.language}}"
+
+    - name: Run CSSLint
+      run: npm install -g csslint && csslint '**/*.css'
+
+    - name: Run EJSLint
+      run: npm install -g ejs-lint && ejslint '**/*.ejs'
+
+    - name: Run Dockerfile Lint
+      run: docker run --rm -i hadolint/hadolint < Dockerfile
