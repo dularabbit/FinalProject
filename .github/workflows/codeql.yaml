@@ -1,4 +1,4 @@
-name: "CodeQL"
+name: "Code Scanning"
 
 on:
   push:
@@ -10,7 +10,7 @@ on:
 
 jobs:
   analyze:
-    name: Analyze (${{ matrix.language }})
+    name: Analyze Code
     runs-on: ubuntu-latest
     timeout-minutes: 360
     permissions:
@@ -19,42 +19,33 @@ jobs:
       actions: read
       contents: read
 
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - language: javascript-typescript
-            build-mode: none
-
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '18'
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
 
-    - name: Install dependencies
-      run: |
-        npm install bootstrap jquery
+      - name: Install dependencies
+        run: |
+          npm install bootstrap jquery
 
-    - name: Initialize CodeQL
-      uses: github/codeql-action/init@v3
-      with:
-        languages: ${{ matrix.language }}
-        build-mode: ${{ matrix.build-mode }}
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: javascript
 
-    - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v3
-      with:
-        category: "/language:${{matrix.language}}"
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
 
-    - name: Run EJSLint
-      run: |
-        npm install -g ejs-lint
-        ejslint '/views'
+      - name: Run EJSLint for EJS files
+        run: |
+          npm install -g ejs-lint
+          find . -type f -name "*.ejs" -exec ejslint {} +
 
-    - name: Run Dockerfile Lint
-      run: |
-        docker run --rm -i hadolint/hadolint < Dockerfile
+      - name: Run ESLint for JavaScript files
+        run: |
+          npm install eslint eslint-plugin-ejs
+          find . -type f -name "*.js" -exec eslint {} +
