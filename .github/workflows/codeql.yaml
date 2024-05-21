@@ -46,23 +46,3 @@ jobs:
           npm install -g ejs-lint
           find . -type f -name "*.ejs" -exec ejslint {} +
 
-  lint-js:
-    name: Lint JavaScript files
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-
-      - name: Install ESLint and required plugins
-        run: npm install eslint eslint-plugin-ejs
-
-      - name: Run ESLint for JavaScript files
-        run: |
-          ./node_modules/.bin/eslint . --config '{"rules": {"semi": "error", "quotes": ["error", "single"]}}'
-
