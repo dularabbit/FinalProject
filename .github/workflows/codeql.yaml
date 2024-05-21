@@ -34,17 +34,8 @@ jobs:
           EJS_FILES=$(find . -type f -name "*.ejs")
           echo "EJS files found: $EJS_FILES"
           
-      - name: Authenticate with Snyk
-        run: npx snyk auth
-
-      - name: Update Snyk Package (if needed)
-        run: npm install -g snyk
-
       - name: Scan for Security Vulnerabilities with npm audit
         run: npm audit
-
-      - name: Scan for Security Vulnerabilities with snyk
-        run: npx snyk test --all-projects
 
       - name: Scan for Security Vulnerabilities with SonarQube
         run: |
