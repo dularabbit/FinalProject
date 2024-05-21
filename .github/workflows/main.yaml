@@ -19,4 +19,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: dulaaaaluuuuuu/finalproject:project
+          tags: dulaaaaluuuuuu/final
