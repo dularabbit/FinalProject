@@ -61,3 +61,4 @@ jobs:
 
       - name: Scan for Security Vulnerabilities with npm audit
         run: npm audit
+
