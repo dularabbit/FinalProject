@@ -33,7 +33,7 @@ jobs:
     - name: Set up Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: '14'
+        node-version: '18'
 
     - name: Install dependencies
       run: |
@@ -51,10 +51,15 @@ jobs:
         category: "/language:${{matrix.language}}"
 
     - name: Run CSSLint
-      run: npm install -g csslint && csslint '**/*.css'
+      run: |
+        npm install -g csslint
+        csslint '/css'
 
     - name: Run EJSLint
-      run: npm install -g ejs-lint && ejslint '**/*.ejs'
+      run: |
+        npm install -g ejs-lint
+        ejslint '/views'
 
     - name: Run Dockerfile Lint
-      run: docker run --rm -i hadolint/hadolint < Dockerfile
+      run: |
+        docker run --rm -i hadolint/hadolint < Dockerfile
