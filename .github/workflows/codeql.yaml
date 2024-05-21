@@ -41,18 +41,6 @@ jobs:
           echo "EJS files found: $EJS_FILES"
           echo "::set-output name=ejs_files::$EJS_FILES"
 
-      - name: Scan EJS files for Security Vulnerabilities
-        run: |
-          EJS_FILES=$(find . -type f -name "*.ejs")
-          if [ -z "$EJS_FILES" ]; then
-            echo "No EJS files found to scan."
-          else
-            for file in $EJS_FILES; do
-              echo "Scanning $file"
-              ./node_modules/.bin/eslint $file --config '{"rules": {"semi": "error", "quotes": ["error", "single"]}}'
-            done
-          fi
-
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
 
